@@ -50,6 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     d.build_dir = "."
     d.has_ssh = true
   end
+  config.ssh.port = 22
   #
   # View the documentation for the provider you're using for more
   # information on available options.
