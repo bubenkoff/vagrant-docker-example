@@ -3,10 +3,14 @@ vagrant-docker-example
 
 Example of basic vagrant docker provider usage
 
-Usage
------
+Installation
+------------
 
-Install vagrant first, using http://vagrantup.com/downloads.html
+Install vagrant: using http://vagrantup.com/downloads.html
+If you are using linux, install docker: https://www.docker.io/gettingstarted/#h_installation
+
+clone this repo
+from repo folder:
 
     vagrant up
     vagrant ssh
