@@ -21,7 +21,7 @@ RUN chown -R vagrant: /home/vagrant/.ssh
 RUN echo -n 'vagrant:vagrant' | chpasswd
 
 # Enable passwordless sudo for the "vagrant" user
-RUN echo 'vagrant ALL=NOPASSWD: ALL' > /etc/sudoers.d/vagrant
+RUN echo 'vagrant ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/vagrant
 
 
 CMD /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=no
