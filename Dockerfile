@@ -1,9 +1,28 @@
-FROM    ubuntu:14.04
+FROM phusion/baseimage:0.9.17
 MAINTAINER Anatoly Bubenkov "bubenkoff@gmail.com"
+
+ENV HOME /root
+
+# enable ssh
+RUN rm -f /etc/service/sshd/down
+
+# Regenerate SSH host keys. baseimage-docker does not contain any, so you
+# have to do that yourself. You may also comment out this instruction; the
+# init system will auto-generate one during boot.
+RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
 
 RUN apt-get update
 
-RUN apt-get install -y openssh-server
+RUN apt-get install -y openssh-server wget lsb-release sudo
+RUN \
+    export release=`lsb_release -cs` \
+    && wget http://apt.puppetlabs.com/puppetlabs-release-$release.deb -O puppetlabs-release-$release.deb \
+    && dpkg -i puppetlabs-release-$release.deb \
+    && apt-get update \
+    && apt-get install puppet -y
 
 EXPOSE 22
 
@@ -21,7 +40,11 @@ RUN chown -R vagrant: /home/vagrant/.ssh
 RUN echo -n 'vagrant:vagrant' | chpasswd
 
 # Enable passwordless sudo for the "vagrant" user
-RUN echo 'vagrant ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/vagrant
+RUN mkdir -p /etc/sudoers.d
+RUN install -b -m 0440 /dev/null /etc/sudoers.d/vagrant
+RUN echo 'vagrant ALL=NOPASSWD: ALL' >> /etc/sudoers.d/vagrant
 
 
-CMD /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=no
+# Clean up APT when done.
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
