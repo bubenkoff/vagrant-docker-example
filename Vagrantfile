@@ -49,6 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Example for VirtualBox:
   #
   config.vm.provider "docker" do |d|
+    d.vagrant_vagrantfile = "Vagrantfile-boot2docker"
     d.build_dir = "."
     d.has_ssh = true
   end
